@@ -101,8 +101,8 @@ services:
     - alpine:3.9
   image: zabbix-web-apache-mysql:alpine-local
   ports:
-   - "1080:80"
-   - "10443:443"
+   - "80:80"
+   - "443:443"
   links:
    - mysql-server:mysql-server
    - zabbix-server:zabbix-server
