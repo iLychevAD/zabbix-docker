@@ -50,12 +50,6 @@ services:
    - net.ipv4.conf.all.accept_redirects=0
    - net.ipv4.conf.all.secure_redirects=0
    - net.ipv4.conf.all.send_redirects=0
-  labels:
-   com.zabbix.description: "Zabbix server with MySQL database support"
-   com.zabbix.company: "Zabbix SIA"
-   com.zabbix.component: "zabbix-server"
-   com.zabbix.dbtype: "mysql"
-   com.zabbix.os: "alpine"
 
  zabbix-proxy-mysql:
   build:
@@ -123,12 +117,6 @@ services:
   depends_on:
    - mysql-server
    - zabbix-server
-  healthcheck:
-   test: ["CMD", "curl", "-f", "http://localhost"]
-   interval: 10s
-   timeout: 5s
-   retries: 3
-   start_period: 30s
   networks:
    zbx_net_backend:
     aliases:
@@ -163,12 +151,6 @@ services:
   depends_on:
    - mysql-server
    - zabbix-server
-  healthcheck:
-   test: ["CMD", "curl", "-f", "http://localhost"]
-   interval: 10s
-   timeout: 5s
-   retries: 3
-   start_period: 30s
   networks:
    zbx_net_backend:
     aliases:
