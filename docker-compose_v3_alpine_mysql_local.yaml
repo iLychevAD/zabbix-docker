@@ -26,14 +26,6 @@ services:
    nofile:
     soft: 20000
     hard: 40000
-  deploy:
-   resources:
-    limits:
-      cpus: '0.70'
-      memory: 1G
-    reservations:
-      cpus: '0.5'
-      memory: 512M
   env_file:
    - .env_db_mysql
    - .env_srv
@@ -90,14 +82,6 @@ services:
    nofile:
     soft: 20000
     hard: 40000
-  deploy:
-   resources:
-    limits:
-      cpus: '0.70'
-      memory: 512M
-    reservations:
-      cpus: '0.3'
-      memory: 256M
   env_file:
    - .env_prx
    - .env_prx_sqlite3
@@ -113,12 +97,6 @@ services:
      - zabbix-proxy-sqlite3-alpine
    zbx_net_frontend:
   stop_grace_period: 30s
-  labels:
-   com.zabbix.description: "Zabbix proxy with SQLite3 database support"
-   com.zabbix.company: "Zabbix SIA"
-   com.zabbix.component: "zabbix-proxy"
-   com.zabbix.dbtype: "sqlite3"
-   com.zabbix.os: "alpine"
 
  zabbix-proxy-mysql:
   build:
@@ -145,14 +123,6 @@ services:
    nofile:
     soft: 20000
     hard: 40000
-  deploy:
-   resources:
-    limits:
-      cpus: '0.70'
-      memory: 512M
-    reservations:
-      cpus: '0.3'
-      memory: 256M
   env_file:
    - .env_db_mysql_proxy
    - .env_prx
@@ -170,12 +140,6 @@ services:
      - zabbix-proxy-mysql-alpine
    zbx_net_frontend:
   stop_grace_period: 30s
-  labels:
-   com.zabbix.description: "Zabbix proxy with MySQL database support"
-   com.zabbix.company: "Zabbix SIA"
-   com.zabbix.component: "zabbix-proxy"
-   com.zabbix.dbtype: "mysql"
-   com.zabbix.os: "alpine"
 
  zabbix-web-apache-mysql:
   build:
@@ -184,8 +148,8 @@ services:
     - alpine:3.9
   image: zabbix-web-apache-mysql:alpine-local
   ports:
-   - "80:80"
-   - "443:443"
+   - "1080:80"
+   - "10443:443"
   links:
    - mysql-server:mysql-server
    - zabbix-server:zabbix-server
@@ -193,14 +157,6 @@ services:
    - /etc/localtime:/etc/localtime:ro
    - /etc/timezone:/etc/timezone:ro
    - ./zbx_env/etc/ssl/apache2:/etc/ssl/apache2:ro
-  deploy:
-   resources:
-    limits:
-      cpus: '0.70'
-      memory: 512M
-    reservations:
-      cpus: '0.5'
-      memory: 256M
   env_file:
    - .env_db_mysql
    - .env_web
@@ -224,13 +180,6 @@ services:
   stop_grace_period: 10s
   sysctls:
    - net.core.somaxconn=65535
-  labels:
-   com.zabbix.description: "Zabbix frontend on Apache web-server with MySQL database support"
-   com.zabbix.company: "Zabbix SIA"
-   com.zabbix.component: "zabbix-frontend"
-   com.zabbix.webserver: "apache2"
-   com.zabbix.dbtype: "mysql"
-   com.zabbix.os: "alpine"
 
  zabbix-web-nginx-mysql:
   build:
@@ -248,14 +197,6 @@ services:
    - /etc/localtime:/etc/localtime:ro
    - /etc/timezone:/etc/timezone:ro
    - ./zbx_env/etc/ssl/nginx:/etc/ssl/nginx:ro
-  deploy:
-   resources:
-    limits:
-      cpus: '0.70'
-      memory: 512M
-    reservations:
-      cpus: '0.5'
-      memory: 256M
   env_file:
    - .env_db_mysql
    - .env_web
@@ -279,13 +220,6 @@ services:
   stop_grace_period: 10s
   sysctls:
    - net.core.somaxconn=65535
-  labels:
-   com.zabbix.description: "Zabbix frontend on Nginx web-server with MySQL database support"
-   com.zabbix.company: "Zabbix SIA"
-   com.zabbix.component: "zabbix-frontend"
-   com.zabbix.webserver: "nginx"
-   com.zabbix.dbtype: "mysql"
-   com.zabbix.os: "alpine"
 
  zabbix-agent:
   build:
@@ -304,15 +238,7 @@ services:
    - ./zbx_env/var/lib/zabbix/ssh_keys:/var/lib/zabbix/ssh_keys:ro
   links:
    - zabbix-server:zabbix-server
-  deploy:
-   resources:
-    limits:
-      cpus: '0.2'
-      memory: 128M
-    reservations:
-      cpus: '0.1'
-      memory: 64M
-   mode: global
+
   env_file:
    - .env_agent
   user: root
@@ -325,11 +251,6 @@ services:
      - zabbix-agent-passive
      - zabbix-agent-alpine
   stop_grace_period: 5s
-  labels:
-   com.zabbix.description: "Zabbix agent"
-   com.zabbix.company: "Zabbix SIA"
-   com.zabbix.component: "zabbix-agentd"
-   com.zabbix.os: "alpine"
 
  zabbix-java-gateway:
   build:
@@ -339,14 +260,7 @@ services:
   image: zabbix-java-gateway:alpine-local
   ports:
    - "10052:10052"
-  deploy:
-   resources:
-    limits:
-      cpus: '0.5'
-      memory: 512M
-    reservations:
-      cpus: '0.25'
-      memory: 256M
+
   env_file:
    - .env_java
   user: root
@@ -356,11 +270,6 @@ services:
      - zabbix-java-gateway
      - zabbix-java-gateway-alpine
   stop_grace_period: 5s
-  labels:
-   com.zabbix.description: "Zabbix Java Gateway"
-   com.zabbix.company: "Zabbix SIA"
-   com.zabbix.component: "java-gateway"
-   com.zabbix.os: "alpine"
 
  zabbix-snmptraps:
   build:
@@ -372,14 +281,7 @@ services:
    - "162:162/udp"
   volumes:
    - ./zbx_env/var/lib/zabbix/snmptraps:/var/lib/zabbix/snmptraps:rw
-  deploy:
-   resources:
-    limits:
-      cpus: '0.5'
-      memory: 256M
-    reservations:
-      cpus: '0.25'
-      memory: 128M
+
   user: root
   networks:
    zbx_net_frontend:
@@ -387,11 +289,7 @@ services:
      - zabbix-snmptraps
    zbx_net_backend:
   stop_grace_period: 5s
-  labels:
-   com.zabbix.description: "Zabbix snmptraps"
-   com.zabbix.company: "Zabbix SIA"
-   com.zabbix.component: "snmptraps"
-   com.zabbix.os: "ubuntu"
+
 
  mysql-server:
   image: mysql:8.0
