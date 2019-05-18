@@ -130,8 +130,8 @@ services:
   user: root
   depends_on:
    - mysql-server
-   - zabbix-java-gateway
-   - zabbix-snmptraps
+#   - zabbix-java-gateway
+#   - zabbix-snmptraps
   networks:
    zbx_net_backend:
     aliases:
@@ -252,43 +252,43 @@ services:
      - zabbix-agent-alpine
   stop_grace_period: 5s
 
- zabbix-java-gateway:
-  build:
-   context: ./java-gateway/alpine
-   cache_from:
-    - alpine:3.9
-  image: zabbix-java-gateway:alpine-local
-  ports:
-   - "10052:10052"
+# zabbix-java-gateway:
+#  build:
+#   context: ./java-gateway/alpine
+#   cache_from:
+#    - alpine:3.9
+#  image: zabbix-java-gateway:alpine-local
+#  ports:
+#   - "10052:10052"
 
-  env_file:
-   - .env_java
-  user: root
-  networks:
-   zbx_net_backend:
-    aliases:
-     - zabbix-java-gateway
-     - zabbix-java-gateway-alpine
-  stop_grace_period: 5s
+#  env_file:
+#   - .env_java
+#  user: root
+#  networks:
+#   zbx_net_backend:
+#    aliases:
+#     - zabbix-java-gateway
+#     - zabbix-java-gateway-alpine
+#  stop_grace_period: 5s
 
- zabbix-snmptraps:
-  build:
-   context: ./snmptraps/alpine
-   cache_from:
-    - alpine:3.9
-  image: zabbix-snmptraps:alpine-local
-  ports:
-   - "162:162/udp"
-  volumes:
-   - ./zbx_env/var/lib/zabbix/snmptraps:/var/lib/zabbix/snmptraps:rw
+# zabbix-snmptraps:
+#  build:
+#   context: ./snmptraps/alpine
+#   cache_from:
+#    - alpine:3.9
+#  image: zabbix-snmptraps:alpine-local
+#  ports:
+#   - "162:162/udp"
+#  volumes:
+#   - ./zbx_env/var/lib/zabbix/snmptraps:/var/lib/zabbix/snmptraps:rw
 
-  user: root
-  networks:
-   zbx_net_frontend:
-    aliases:
-     - zabbix-snmptraps
-   zbx_net_backend:
-  stop_grace_period: 5s
+#  user: root
+#  networks:
+#   zbx_net_frontend:
+#    aliases:
+#     - zabbix-snmptraps
+#   zbx_net_backend:
+#  stop_grace_period: 5s
 
 
  mysql-server:
